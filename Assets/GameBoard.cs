@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
+
 /**
  * NOTES:
  *
@@ -15,9 +18,11 @@ public class GameBoard : MonoBehaviour {
 	private GameObject[,] cubeManager = new GameObject[8,8];//manage which cubes aren't pressed.
 	//private GameObject[,] cubeTracker = new GameObject[8,8];
 	private GameObject cube;
+	public Text scoreboard;
 	private int x;
 	private int y;
-
+	public int scoreBlack;
+	public int scoreWhite;
 	private int turn = 0;
 
 	// Use this for initialization
@@ -31,9 +36,6 @@ public class GameBoard : MonoBehaviour {
 				}else if((i==4 && j ==3) || (i==3 &&j ==4)){
 					cube.GetComponent<Renderer>().material.color = Color.black;
 					boardManager[i,j] = 'B';
-				}else if(i == 6 && j == 2)
-				{
-					cube.GetComponent<Renderer>().material.color = Color.red;
 				}else{
 					cube.GetComponent<Renderer>().material.color = Color.gray;
 					boardManager[i,j] = 'X';
@@ -83,6 +85,7 @@ public class GameBoard : MonoBehaviour {
 				boardManager[y, x] = updateManager;
 				//changeRowsAndColumns(y,x);
 				turn++;
+				UpdateScore();
 					
 			}else{
 					//Debug.Log("boardManager reset = " + boardManager[y,x]);
@@ -95,6 +98,35 @@ public class GameBoard : MonoBehaviour {
 		//Debug.Log( " tile " + cube.GetComponent<TIleSelection>().x);
 	}
 
+
+	private void UpdateScore()
+	{
+		//resets all scores to 0 because it will be recounted.
+		scoreBlack = 0;
+		scoreWhite = 0;
+		for (int i = 0; i < 7; i++)
+		{
+			for (int j = 0; j < 7; j++)
+			{
+				if (boardManager[i, j].Equals('B'))
+				{
+					scoreBlack++;
+				}else if (boardManager[i, j].Equals('W'))
+				{
+					scoreWhite++;
+				}
+			}
+		}
+
+		scoreboard.text = "Score: Black = " + scoreBlack + ", White  = " + scoreWhite;
+	}
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * I know how garbage this looks. I just didn't have the time to change so it could be simplified. Someday I'll come back and change it when I have time.
 	 */
@@ -181,21 +213,15 @@ public class GameBoard : MonoBehaviour {
 		reverseFound = false;
 		while (y > 1 && j >=0)
 		{
-			Debug.Log("x = " + x + " j = " + j + " Color " + boardManager[x, j]);
-			Debug.Log("BoardManager.equals(turn) = " + boardManager[x,j].Equals(turn));
-
 			if (boardManager[x, y-1].Equals('X') || boardManager[x, y - 1].Equals(turn))
 			{
-				Debug.Log("BREAK");
 				break;
 			}
 			if (boardManager[x , j].Equals(opp) && !reverseFound)
 			{
-				Debug.Log("reversefound");
 				reverseFound = true;
 			}else if(reverseFound && boardManager[x, j].Equals(turn))
 			{
-				Debug.Log("Clickable");
 				clickable = true;
 				answer = true;
 				break;
@@ -379,10 +405,6 @@ public class GameBoard : MonoBehaviour {
 			}
 		}
 		
-		
-		
-
-		Debug.Log("clickable = " + clickable);
 		return answer;
 	}
 	
