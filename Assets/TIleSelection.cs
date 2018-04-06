@@ -30,4 +30,11 @@ public class TIleSelection : MonoBehaviour {
 		
 	}
 
+	public void resetTile()
+	{
+		isSelected = false;
+		flag = false;
+	}
+	
+
 }
