@@ -1,7 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/**
+ * NOTES:
+ *
+ * one of the things I am going to note is how the tiles change. Instead of changing colors, I could have focused more on the actual boardmanager rather than tile colors. But as I used the tiles to visualize
+ * it became my focus when generating turns.
+ */
 public class GameBoard : MonoBehaviour {
 
 	//public TIleSelection cubeScript;
@@ -90,35 +95,12 @@ public class GameBoard : MonoBehaviour {
 		//Debug.Log( " tile " + cube.GetComponent<TIleSelection>().x);
 	}
 
-
-	void changeRowsAndColumns(int x, int y){
-		char change = 'B';
-		if(turn%2 == 0){
-			change = 'W';
-		}
-		for(int i = 0; i < 8; i++){//change the opposite color!
-			if(boardManager[i, y] != change && boardManager[i,y] != 'X'){
-				boardManager[i,y] = change;
-				if(change == 'W'){
-					cubeManager[i,y].GetComponent<Renderer>().material.color = Color.white;
-				}else{
-					cubeManager[i,y].GetComponent<Renderer>().material.color = Color.black;
-				}
-			}
-			if(boardManager[x, i] != change && boardManager[x,i] != 'X'){
-				boardManager[x,i] = change;
-				if(change == 'W'){
-					cubeManager[x,i].GetComponent<Renderer>().material.color = Color.white;
-				}else{
-					cubeManager[x,i].GetComponent<Renderer>().material.color = Color.black;
-				}
-			}
-		}
-	}
-
+	/**
+	 * I know how garbage this looks. I just didn't have the time to change so it could be simplified. Someday I'll come back and change it when I have time.
+	 */
 	private bool checkIfClickable(char turn, int y, int x){//checks if tile can be placed and changes colors of tiles between.
 		bool answer = false;
-		int i = x-1;
+		int i = x;
 		int j = y;
 		bool clickable = false; //true if the change is found.
 		bool reverseFound = false; //true there is reverse next to clicked object.
@@ -261,6 +243,142 @@ public class GameBoard : MonoBehaviour {
 				j--;
 			}
 		}
+
+		i = x;
+		j = y;
+		clickable = false;
+		reverseFound = false;
+		while (y < 7 && j <=7 && x < 7 && i <= 7)
+		{
+			if (boardManager[x + 1, y + 1].Equals('X') || boardManager[x + 1, y + 1].Equals(turn))
+			{
+				break;
+			}
+			if (boardManager[i , j].Equals(opp) && !reverseFound)
+			{
+				reverseFound = true;
+			}else if(reverseFound && boardManager[i, j].Equals(turn))
+			{
+				clickable = true;
+				answer = true;
+				break;
+			}
+			j++;
+			i++;
+		}
+		if (clickable)
+		{
+			while (j > y && i > x)
+			{
+				cubeManager[i, j].GetComponent<Renderer>().material.color = color;
+				boardManager[i, j] = turn;
+				j--;
+				i--;
+			}
+		}
+		
+		
+		
+		
+		i = x;
+		j = y;
+		clickable = false;
+		reverseFound = false;
+		while (y > 0 && j >= 0 && x < 7 && i <= 7)
+		{
+			if (boardManager[x + 1, y - 1].Equals('X') || boardManager[x + 1, y - 1].Equals(turn))
+			{
+				break;
+			}
+			if (boardManager[i , j].Equals(opp) && !reverseFound)
+			{
+				reverseFound = true;
+			}else if(reverseFound && boardManager[i, j].Equals(turn))
+			{
+				clickable = true;
+				answer = true;
+				break;
+			}
+			j--;
+			i++;
+		}
+		if (clickable)
+		{
+			while (j < y && i > x)
+			{
+				cubeManager[i, j].GetComponent<Renderer>().material.color = color;
+				boardManager[i, j] = turn;
+				j++;
+				i--;
+			}
+		}
+		
+		i = x;
+		j = y;
+		clickable = false;
+		reverseFound = false;
+		while (y > 0 && j >= 0 && x > 0 && i >= 0)
+		{
+			if (boardManager[x - 1, y - 1].Equals('X') || boardManager[x - 1, y - 1].Equals(turn))
+			{
+				break;
+			}
+			if (boardManager[i , j].Equals(opp) && !reverseFound)
+			{
+				reverseFound = true;
+			}else if(reverseFound && boardManager[i, j].Equals(turn))
+			{
+				clickable = true;
+				answer = true;
+				break;
+			}
+			j--;
+			i--;
+		}
+		if (clickable)
+		{
+			while (j < y && i < x)
+			{
+				cubeManager[i, j].GetComponent<Renderer>().material.color = color;
+				boardManager[i, j] = turn;
+				j++;
+				i++;
+			}
+		}
+		
+		i = x;
+		j = y;
+		clickable = false;
+		reverseFound = false;
+		while (y < 7 && j <= 7 && x > 0 && i >= 0)
+		{
+			if (boardManager[x - 1, y + 1].Equals('X') || boardManager[x - 1, y + 1].Equals(turn))
+			{
+				break;
+			}
+			if (boardManager[i , j].Equals(opp) && !reverseFound)
+			{
+				reverseFound = true;
+			}else if(reverseFound && boardManager[i, j].Equals(turn))
+			{
+				clickable = true;
+				answer = true;
+				break;
+			}
+			j++;
+			i--;
+		}
+		if (clickable)
+		{
+			while (j > y && i < x)
+			{
+				cubeManager[i, j].GetComponent<Renderer>().material.color = color;
+				boardManager[i, j] = turn;
+				j--;
+				i++;
+			}
+		}
+		
 		
 		
 
